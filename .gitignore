@@ -4,6 +4,10 @@ Thumbs.db
 buildsrc/
 cmake-build-*
 
+# Ignore cocos studio cache
+*.udf
+config.json
+
 # Ignore files build by Visual Studio
 *.exe
 *.pdb
