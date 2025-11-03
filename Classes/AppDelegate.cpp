@@ -102,6 +102,12 @@ bool AppDelegate::applicationDidFinishLaunching() {
     //     director->setContentScaleFactor(MIN(smallResolutionSize.height/designResolutionSize.height, smallResolutionSize.width/designResolutionSize.width));
     // }
 
+    // Images path
+    std::vector<std::string> paths;
+    paths.push_back("GUI");
+    paths.push_back("GUI/cocosstudio");
+    cocos2d::FileUtils::getInstance()->setSearchPaths(paths);
+
     // create a scene. it's an autorelease object
     auto scene = HelloWorld::createScene();
 

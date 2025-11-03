@@ -24,6 +24,10 @@
 
 #include "HelloWorldScene.h"
 
+#include "cocostudio/ActionTimeline/CSLoader.h"
+#include "ui/UIImageView.h"
+#include "utils/NodeUtils.h"
+
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
@@ -50,6 +54,8 @@ bool HelloWorld::init()
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+
 
     /////////////////////////////
     // 2. add a menu item with "X" image, which is clicked to quit the program
@@ -114,6 +120,21 @@ bool HelloWorld::init()
         // add the sprite as a child to this layer
         this->addChild(sprite, 0);
     }
+
+
+    auto gameplayboard = CSLoader::createNode("GUI/cocosstudio/widgets/gameplayScene.csb");
+    addChild(gameplayboard);
+    if (auto gameboard = NodeUtils::getNodeByName(gameplayboard, "gameboard")) {
+        auto tile = CSLoader::createNode("GUI/cocosstudio/widgets/tile.csb");
+        gameboard->addChild(tile);
+        if (auto btn = dynamic_cast<cocos2d::ui::ImageView*>(NodeUtils::getNodeByName(gameboard, "tileImage"))) {
+            btn->setTouchEnabled(true);
+            btn->addTouchEventListener([](cocos2d::Ref*, cocos2d::ui::Widget::TouchEventType type) {
+                CCLOG("test %d", type);
+            });
+        }
+    }
+
     return true;
 }
 
