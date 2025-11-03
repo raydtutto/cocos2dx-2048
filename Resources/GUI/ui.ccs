@@ -1,0 +1,26 @@
+<Solution>
+  <PropertyGroup Name="ui" Version="3.10.0.0" Type="CocosStudio" />
+  <SolutionFolder>
+    <Group ctype="ResourceGroup">
+      <RootFolder Name=".">
+        <Folder Name="img">
+          <Image Name="1024.png" />
+          <Image Name="128.png" />
+          <Image Name="16.png" />
+          <Image Name="2.png" />
+          <Image Name="2048.png" />
+          <Image Name="256.png" />
+          <Image Name="32.png" />
+          <Image Name="4.png" />
+          <Image Name="4096.png" />
+          <Image Name="512.png" />
+          <Image Name="64.png" />
+        </Folder>
+        <Folder Name="widgets">
+          <Project Name="gameplayScene.csd" Type="Layer" />
+          <Project Name="tile.csd" Type="Layer" />
+        </Folder>
+      </RootFolder>
+    </Group>
+  </SolutionFolder>
+</Solution>
