@@ -4,6 +4,7 @@
     <Group ctype="ResourceGroup">
       <RootFolder Name=".">
         <Folder Name="img">
+          <Image Name="0.png" />
           <Image Name="1024.png" />
           <Image Name="128.png" />
           <Image Name="16.png" />
