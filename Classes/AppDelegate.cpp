@@ -23,7 +23,7 @@
  ****************************************************************************/
 
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
+#include "scenes/GameplayScene.h"
 
 #define USE_AUDIO_ENGINE 1
 
@@ -109,7 +109,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     cocos2d::FileUtils::getInstance()->setSearchPaths(paths);
 
     // create a scene. it's an autorelease object
-    auto scene = HelloWorld::createScene();
+    auto scene = GameplayScene::create();
 
     // run
     director->runWithScene(scene);
