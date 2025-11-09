@@ -14,7 +14,8 @@ cocos2d::Node* NodeUtils::getNodeByName(cocos2d::Node *parent, const std::string
             return child;
         }
 
-        return getNodeByName(child, name);
+        if (auto node = getNodeByName(child, name))
+            return node;
     }
 
     return nullptr;

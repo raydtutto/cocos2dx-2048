@@ -8,6 +8,9 @@ public:
     static GameplayScene* create();
 protected:
     bool initWithCSB(const std::string &path) override;
+
+public:
+    void onEnter() override;
 };
 
 

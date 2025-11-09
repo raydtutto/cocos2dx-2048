@@ -29,6 +29,8 @@ set(APP_NAME 2048-game)
 
 project(${APP_NAME})
 
+set(CMAKE_CXX_STANDARD 20)
+
 if(XCODE)
     if(NOT DEFINED CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET)
         SET (CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET 8.0)
@@ -58,12 +60,14 @@ endif()
 list(APPEND GAME_SOURCE
      Classes/AppDelegate.cpp
      Classes/scenes/GameplayScene.cpp
+     Classes/widgets/TileWidget.cpp
      Classes/utils/NodeUtils.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
      Classes/scenes/GameplayScene.h
      Classes/scenes/SceneBase.h
+     Classes/widgets/TileWidget.h
      Classes/utils/NodeUtils.h
      )
 
