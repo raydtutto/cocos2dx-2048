@@ -8,7 +8,6 @@ protected:
     virtual bool initWithCSB(const std::string& path) = 0;
 
     cocos2d::Node* mRootNode{nullptr};
-
 };
 
 

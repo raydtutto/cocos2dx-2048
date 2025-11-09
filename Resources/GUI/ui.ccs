@@ -22,6 +22,7 @@
           <Project Name="gameplayScene.csd" Type="Layer" />
           <Project Name="tile.csd" Type="Layer" />
         </Folder>
+        <TTF Name="Marker Felt.ttf" />
       </RootFolder>
     </Group>
   </SolutionFolder>
