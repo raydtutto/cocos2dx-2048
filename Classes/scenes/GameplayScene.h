@@ -3,7 +3,16 @@
 
 
 #include "SceneBase.h"
+#include <tuple>
 #include <map>
+
+enum class eDirection : char {
+    UNDEFINED = -1,
+    UP = 0,
+    DOWN,
+    RIGHT,
+    LEFT
+};
 
 struct TileInfo {
     cocos2d::Node* pNode = nullptr;
@@ -15,10 +24,14 @@ public:
     static GameplayScene* create();
     void onEnter() override;
 
+
 protected:
     bool initWithCSB(const std::string &path) override;
     void fillGrid();
+
     void touchHandler();
+    void onMove(eDirection dir);
+    std::pair<std::pair<int, int>, std::pair<int, int>> getStartRandomPosition() const;
 
 private:
     std::map<int, std::map<int, TileInfo>> mGrid;

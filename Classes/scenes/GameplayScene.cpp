@@ -1,9 +1,10 @@
 #include "GameplayScene.h"
 
-#include "ccConstants.h"
 #include "cocostudio/ActionTimeline/CSLoader.h"
 #include "utils/NodeUtils.h"
 #include "widgets/TileWidget.h"
+
+#include <random>
 
 using namespace cocos2d;
 
@@ -41,7 +42,6 @@ void GameplayScene::fillGrid() {
     }
     const auto size = Director::getInstance()->getWinSize();
     gameboard->setContentSize(Size(size.width, size.width));
-
     for (auto& row : mGrid) {
         for (auto& item : row.second) {
             if (item.second.pNode)
@@ -56,10 +56,17 @@ void GameplayScene::fillGrid() {
         tileSize = tileTemp->getContentSize();
     }
 
+    const auto randomPos = getStartRandomPosition();
+
     int count = 0;
     for (int x = 0; x < 4; ++x) {
         for (int y = 0; y < 4; ++y) {
-            if (TileWidget* tile = TileWidget::create(2)) {
+            int nextNum = 0;
+            if ((randomPos.first.first == x && randomPos.first.second == y) || (randomPos.second.first == x && randomPos.second.second == y)) {
+                nextNum = 2;
+            }
+
+            if (TileWidget* tile = TileWidget::create(nextNum)) {
                 gameboard->addChild(tile);
                 if (mGrid.count(x) == 0U) {
                     mGrid[x] = {};
@@ -90,20 +97,30 @@ void GameplayScene::touchHandler() {
     myListener->onTouchEnded = [this](Touch* touch, Event* event) {
         CCLOG("Touch ended %f %f", touch->getLocation().x, touch->getLocation().y);
         auto loc = touch->getLocation();
+        eDirection dir = eDirection::UNDEFINED;
         if (loc.x > mInitTouchPos.x + touchSwipeThreshold) {
+            dir = eDirection::RIGHT;
             CCLOG("Right");
         } else if (loc.x < mInitTouchPos.x - touchSwipeThreshold) {
+            dir = eDirection::LEFT;
             CCLOG("Left");
         } else if (loc.y > mInitTouchPos.y + touchSwipeThreshold) {
+            dir = eDirection::UP;
             CCLOG("Up");
         } else if (loc.y < mInitTouchPos.y - touchSwipeThreshold) {
+            dir = eDirection::DOWN;
             CCLOG("Down");
         }
 
         mInitTouchPos = cocos2d::Vec2::ZERO;
+        onMove(dir);
     };
 
     Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(myListener, this);
+}
+
+void GameplayScene::onMove(eDirection dir) {
+    // todo
 }
 
 void GameplayScene::onEnter() {
@@ -131,9 +148,22 @@ void GameplayScene::onEnter() {
     // }
 
     fillGrid();
-    // todo new func to handle touches touchHandler()
-    // Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mylistener, this);
-    // in all events like onTouchMoved, CCLOG all useful data
-
     touchHandler();
+}
+
+std::pair<std::pair<int, int>, std::pair<int, int>> GameplayScene::getStartRandomPosition() const {
+    std::random_device rd;
+    std::uniform_int_distribution<int> dist(0, 3);
+
+    std::pair<std::pair<int, int>, std::pair<int, int>> result;
+    result.first.first = dist(rd);
+    result.second.first = dist(rd);
+    while (result.first.first == result.second.first) {
+        result.second.first = dist(rd);
+    }
+
+    result.first.second = dist(rd);
+    result.second.second = dist(rd);
+
+    return result;
 }
