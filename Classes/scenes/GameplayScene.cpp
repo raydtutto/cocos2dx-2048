@@ -41,7 +41,9 @@ void GameplayScene::fillGrid() {
         return;
     }
     const auto size = Director::getInstance()->getWinSize();
-    gameboard->setContentSize(Size(size.width, size.width));
+    auto boardSize = gameboard->getContentSize();
+    auto scale = size.width / boardSize.width;
+    gameboard->setScale(scale);
     for (auto& row : mGrid) {
         for (auto& item : row.second) {
             if (item.second.pNode)
@@ -74,7 +76,8 @@ void GameplayScene::fillGrid() {
                 TileInfo tileInfo;
                 tileInfo.num = 0;
                 tileInfo.pNode = tile;
-                tile->setPosition(Vec2((x + 1) * tileSize.width, (y + 1) * tileSize.height));
+                tile->setAnchorPoint({0.5f, 0.5f});
+                tile->setPosition(Vec2(static_cast<float>(x) * tileSize.width + tileSize.width / 2, static_cast<float>(y) * tileSize.height + tileSize.height / 2));
 
                 mGrid[x][y] = tileInfo;
                 count++;
@@ -158,6 +161,7 @@ std::pair<std::pair<int, int>, std::pair<int, int>> GameplayScene::getStartRando
     std::pair<std::pair<int, int>, std::pair<int, int>> result;
     result.first.first = dist(rd);
     result.second.first = dist(rd);
+
     while (result.first.first == result.second.first) {
         result.second.first = dist(rd);
     }
