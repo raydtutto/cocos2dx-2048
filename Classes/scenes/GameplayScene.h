@@ -18,9 +18,11 @@ public:
 protected:
     bool initWithCSB(const std::string &path) override;
     void fillGrid();
+    void touchHandler();
 
 private:
     std::map<int, std::map<int, TileInfo>> mGrid;
+    cocos2d::Vec2 mInitTouchPos = cocos2d::Vec2::ZERO;
 };
 
 

@@ -1,9 +1,15 @@
 #include "GameplayScene.h"
+
+#include "ccConstants.h"
 #include "cocostudio/ActionTimeline/CSLoader.h"
 #include "utils/NodeUtils.h"
 #include "widgets/TileWidget.h"
 
 using namespace cocos2d;
+
+namespace {
+    constexpr auto touchSwipeThreshold = 70.f;
+}
 
 GameplayScene* GameplayScene::create() {
     GameplayScene *pScene = new(std::nothrow) GameplayScene();
@@ -72,8 +78,37 @@ void GameplayScene::fillGrid() {
     CCLOG("Board filled with %d", count);
 }
 
+void GameplayScene::touchHandler() {
+    auto myListener = EventListenerTouchOneByOne::create();
+
+    myListener->onTouchBegan = [this](Touch* touch, Event* event) {
+        CCLOG("Touch began %f %f", touch->getStartLocation().x, touch->getStartLocation().y);
+        mInitTouchPos = touch->getStartLocation();
+        return true;
+    };
+
+    myListener->onTouchEnded = [this](Touch* touch, Event* event) {
+        CCLOG("Touch ended %f %f", touch->getLocation().x, touch->getLocation().y);
+        auto loc = touch->getLocation();
+        if (loc.x > mInitTouchPos.x + touchSwipeThreshold) {
+            CCLOG("Right");
+        } else if (loc.x < mInitTouchPos.x - touchSwipeThreshold) {
+            CCLOG("Left");
+        } else if (loc.y > mInitTouchPos.y + touchSwipeThreshold) {
+            CCLOG("Up");
+        } else if (loc.y < mInitTouchPos.y - touchSwipeThreshold) {
+            CCLOG("Down");
+        }
+
+        mInitTouchPos = cocos2d::Vec2::ZERO;
+    };
+
+    Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(myListener, this);
+}
+
 void GameplayScene::onEnter() {
     SceneBase::onEnter();
+    CCLOG("GameplayScene::onEnter");
 
     // auto gameboard = NodeUtils::getNodeByName(this,"gameboard");
     // if (gameboard) {
@@ -96,4 +131,9 @@ void GameplayScene::onEnter() {
     // }
 
     fillGrid();
+    // todo new func to handle touches touchHandler()
+    // Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mylistener, this);
+    // in all events like onTouchMoved, CCLOG all useful data
+
+    touchHandler();
 }

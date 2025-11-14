@@ -16,6 +16,18 @@
             <PreSize X="1.0000" Y="1.0000" />
             <FileData Type="Normal" Path="img/tile2.png" Plist="" />
           </AbstractNodeData>
+          <AbstractNodeData Name="text" ActionTag="347197320" Tag="5" IconVisible="False" LeftMargin="40.5000" RightMargin="38.5000" TopMargin="17.0000" BottomMargin="13.0000" FontSize="100" LabelText="2" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+            <Size X="57.0000" Y="106.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="69.0000" Y="66.0000" />
+            <Scale ScaleX="0.5000" ScaleY="0.5000" />
+            <CColor A="255" R="0" G="0" B="0" />
+            <PrePosition X="0.5074" Y="0.4853" />
+            <PreSize X="0.4191" Y="0.7794" />
+            <FontResource Type="Normal" Path="Marker Felt.ttf" Plist="" />
+            <OutlineColor A="255" R="255" G="0" B="0" />
+            <ShadowColor A="255" R="110" G="110" B="110" />
+          </AbstractNodeData>
         </Children>
       </ObjectData>
     </Content>
