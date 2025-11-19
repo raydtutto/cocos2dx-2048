@@ -1,5 +1,8 @@
 #include "TileWidget.h"
 
+#include "ui/UIText.h"
+#include "utils/NodeUtils.h"
+
 using namespace cocos2d;
 using namespace cocos2d::ui;
 
@@ -19,9 +22,9 @@ std::unordered_map<int, std::string> TileWidget::imageList = {
     {4096, "GUI/cocosstudio/img/tile4096.png"}
 };
 
-TileWidget * TileWidget::create(int num) {
+TileWidget * TileWidget::create(int num, const std::string& info) {
     auto* pTile = new(std::nothrow) TileWidget();
-    if (pTile && pTile->initWithNum(num)) {
+    if (pTile && pTile->initWithNum(num, info)) {
         pTile->autorelease();
         return pTile;
     }
@@ -29,9 +32,25 @@ TileWidget * TileWidget::create(int num) {
     return nullptr;
 }
 
-bool TileWidget::initWithNum(int num) {
+void TileWidget::updateTile(int num, const std::string &info) {
     if (num >= 0 && imageList.count(num) > 0U && ImageView::init()) {
         loadTexture(imageList[num], TextureResType::LOCAL);
+    }
+    if (auto text = dynamic_cast<Text*>(NodeUtils::getNodeByName(this, "text"))) {
+        text->setString(info);
+    }
+}
+
+bool TileWidget::initWithNum(int num, const std::string& info) {
+    if (num >= 0 && imageList.count(num) > 0U && ImageView::init()) {
+        loadTexture(imageList[num], TextureResType::LOCAL);
+        if (!info.empty()) {
+            auto text = Text::create();
+            text->setPositionX(15.f);
+            text->setName("text");
+            text->setString(info);
+            addChild(text);
+        }
         return true;
     }
     CCASSERT(false, "Cannot initialize this tile.");

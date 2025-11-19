@@ -7,9 +7,10 @@
 
 class TileWidget : public cocos2d::ui::ImageView {
 public:
-    static TileWidget* create(int num = 0);
+    static TileWidget* create(int num = 0, const std::string& info = "");
+    void updateTile(int num, const std::string& info = "");
 protected:
-    bool initWithNum(int num);
+    bool initWithNum(int num, const std::string& info = "");
 private:
     static std::unordered_map<int, std::string> imageList;
 };

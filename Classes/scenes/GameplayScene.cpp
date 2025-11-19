@@ -5,11 +5,13 @@
 #include "widgets/TileWidget.h"
 
 #include <random>
+#include <tuple>
 
 using namespace cocos2d;
 
 namespace {
     constexpr auto touchSwipeThreshold = 70.f;
+    constexpr std::pair<int, int> gridSize{4, 4};
 }
 
 GameplayScene* GameplayScene::create() {
@@ -78,14 +80,14 @@ void GameplayScene::fillGrid() {
     const auto randomPos = getStartRandomPosition();
 
     int count = 0;
-    for (int x = 0; x < 4; ++x) {
-        for (int y = 0; y < 4; ++y) {
+    for (int x = 0; x < gridSize.first; ++x) {
+        for (int y = 0; y < gridSize.second; ++y) {
             int nextNum = 0;
             if ((randomPos.first.first == x && randomPos.first.second == y) || (randomPos.second.first == x && randomPos.second.second == y)) {
                 nextNum = 2;
             }
 
-            if (TileWidget* tile = TileWidget::create(nextNum)) {
+            if (TileWidget* tile = TileWidget::create(nextNum, StringUtils::format("x%d,y%d", x, y))) {
                 gameboard->addChild(tile);
                 if (mGrid.count(x) == 0U) {
                     mGrid[x] = {};
@@ -140,6 +142,7 @@ void GameplayScene::touchHandler() {
 }
 
 void GameplayScene::onMove(eDirection dir) {
+    // todo move without merging
     if (dir == eDirection::RIGHT) {
         //
     }
@@ -148,26 +151,6 @@ void GameplayScene::onMove(eDirection dir) {
 void GameplayScene::onEnter() {
     SceneBase::onEnter();
     CCLOG("GameplayScene::onEnter");
-
-    // auto gameboard = NodeUtils::getNodeByName(this,"gameboard");
-    // if (gameboard) {
-    //     auto size = Director::getInstance()->getWinSize();
-    //     gameboard->setContentSize(Size(size.width, size.width));
-    //     Size tileSize;
-    //
-    //     if (TileWidget* tile1 = TileWidget::create(2)) {
-    //         tileSize = tile1->getContentSize();
-    //         gameboard->addChild(tile1);
-    //         tile1->setPositionY(128);
-    //         tile1->setPositionX(tileSize.width / 2);
-    //     }
-    //
-    //     if (TileWidget* tile2 = TileWidget::create(1)) {
-    //         gameboard->addChild(tile2);
-    //         tile2->setPositionY(512);
-    //         tile2->setPositionX(tileSize.width / 2);
-    //     }
-    // }
 
     fillGrid();
     touchHandler();
