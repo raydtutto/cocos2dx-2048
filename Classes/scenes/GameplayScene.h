@@ -15,15 +15,18 @@ enum class eDirection : char {
 };
 
 struct TileInfo {
-    cocos2d::Node* pNode = nullptr;
+    cocos2d::Node* pNode{nullptr};
     int num = 0;
 };
 
 class GameplayScene : public SceneBase {
 public:
     static GameplayScene* create();
-    void onEnter() override;
+    ~GameplayScene();
 
+    void onEnter() override;
+    void keyPressed(cocos2d::EventKeyboard::KeyCode, cocos2d::Event*);
+    void keyReleased(cocos2d::EventKeyboard::KeyCode, cocos2d::Event*);
 
 protected:
     bool initWithCSB(const std::string &path) override;
@@ -36,6 +39,7 @@ protected:
 private:
     std::map<int, std::map<int, TileInfo>> mGrid;
     cocos2d::Vec2 mInitTouchPos = cocos2d::Vec2::ZERO;
+    cocos2d::EventListenerKeyboard* mKeyListener{nullptr};
 };
 
 

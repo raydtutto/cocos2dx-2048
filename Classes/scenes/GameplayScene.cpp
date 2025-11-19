@@ -22,12 +22,29 @@ GameplayScene* GameplayScene::create() {
     return nullptr;
 }
 
+GameplayScene::~GameplayScene() {
+    if (mKeyListener) {
+        mKeyListener->release();
+        mKeyListener = nullptr;
+    }
+}
+
 bool GameplayScene::initWithCSB(const std::string& path) {
     auto scene = CSLoader::createNode(path);
     if (scene && SceneBase::init()) {
         CC_SAFE_RELEASE(mRootNode);
         mRootNode = scene;
         addChild(mRootNode);
+
+        mKeyListener = EventListenerKeyboard::create();
+        if (mKeyListener) {
+            mKeyListener->onKeyPressed = CC_CALLBACK_2(GameplayScene::keyPressed, this);
+            mKeyListener->onKeyReleased = CC_CALLBACK_2(GameplayScene::keyReleased, this);
+            _eventDispatcher->addEventListenerWithSceneGraphPriority(mKeyListener, this);
+        } else {
+            CCASSERT(mKeyListener, "mKeyListener is null");
+        }
+
         return true;
     }
 
@@ -115,7 +132,7 @@ void GameplayScene::touchHandler() {
             CCLOG("Down");
         }
 
-        mInitTouchPos = cocos2d::Vec2::ZERO;
+        mInitTouchPos = Vec2::ZERO;
         onMove(dir);
     };
 
@@ -123,7 +140,9 @@ void GameplayScene::touchHandler() {
 }
 
 void GameplayScene::onMove(eDirection dir) {
-    // todo
+    if (dir == eDirection::RIGHT) {
+        //
+    }
 }
 
 void GameplayScene::onEnter() {
@@ -152,6 +171,33 @@ void GameplayScene::onEnter() {
 
     fillGrid();
     touchHandler();
+}
+
+void GameplayScene::keyPressed(EventKeyboard::KeyCode keyCode, Event*) {
+    //
+}
+
+void GameplayScene::keyReleased(EventKeyboard::KeyCode keyCode, Event*) {
+    switch (keyCode) {
+        case EventKeyboard::KeyCode::KEY_UP_ARROW:
+        case EventKeyboard::KeyCode::KEY_W:
+            CCLOG("UP");
+            break;
+        case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+        case EventKeyboard::KeyCode::KEY_S:
+            CCLOG("DOWN");
+            break;
+        case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+        case EventKeyboard::KeyCode::KEY_A:
+            CCLOG("LEFT");
+            break;
+        case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+        case EventKeyboard::KeyCode::KEY_D:
+            CCLOG("RIGHT");
+            break;
+        default:
+            break;
+    }
 }
 
 std::pair<std::pair<int, int>, std::pair<int, int>> GameplayScene::getStartRandomPosition() const {
