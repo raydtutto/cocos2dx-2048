@@ -182,18 +182,22 @@ void GameplayScene::keyReleased(EventKeyboard::KeyCode keyCode, Event*) {
         case EventKeyboard::KeyCode::KEY_UP_ARROW:
         case EventKeyboard::KeyCode::KEY_W:
             CCLOG("UP");
+            onMove(eDirection::UP);
             break;
         case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
         case EventKeyboard::KeyCode::KEY_S:
             CCLOG("DOWN");
+            onMove(eDirection::DOWN);
             break;
         case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
         case EventKeyboard::KeyCode::KEY_A:
             CCLOG("LEFT");
+            onMove(eDirection::LEFT);
             break;
         case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
         case EventKeyboard::KeyCode::KEY_D:
             CCLOG("RIGHT");
+            onMove(eDirection::RIGHT);
             break;
         default:
             break;
