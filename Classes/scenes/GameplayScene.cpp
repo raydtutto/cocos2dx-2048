@@ -93,7 +93,7 @@ void GameplayScene::fillGrid() {
                     mGrid[x] = {};
                 }
                 TileInfo tileInfo;
-                tileInfo.num = 0;
+                tileInfo.num = nextNum;
                 tileInfo.pNode = tile;
                 tile->setAnchorPoint({0.5f, 0.5f});
                 tile->setPosition(Vec2(static_cast<float>(x) * tileSize.width + tileSize.width / 2, static_cast<float>(y) * tileSize.height + tileSize.height / 2));
@@ -143,8 +143,49 @@ void GameplayScene::touchHandler() {
 
 void GameplayScene::onMove(eDirection dir) {
     // todo move without merging
-    if (dir == eDirection::RIGHT) {
-        //
+    if (dir == eDirection::DOWN) {
+        for (int x = 0; x < gridSize.first; ++x) {
+            std::vector<TileInfo*> line;
+            line.push_back(&mGrid[x][0]);
+            line.push_back(&mGrid[x][1]);
+            line.push_back(&mGrid[x][2]);
+            line.push_back(&mGrid[x][3]);
+            proceedOnMove(line);
+        }
+    }
+}
+
+void GameplayScene::proceedOnMove(std::vector<TileInfo*> line) {
+    CCLOG("ProceedOnMove");
+    auto size = static_cast<int>(line.size());
+    int current = size - 1;
+    while (current >= 0) {
+        if (line[current]->num == 0) {
+            current--;
+            continue;
+        }
+        int next = current - 1;
+        while (next >= 0) {
+            if (line[current]->num == line[next]->num) {
+                CCLOG("Merge");
+                int res = line[current]->num + line[next]->num;
+                line[next]->pNode->updateTile(res);
+                line[next]->num = res;
+                line[current]->pNode->updateTile(0);
+                line[current]->num = 0;
+            } else if (line[next]->num > 0) {
+                CCLOG("Stop");
+            } else {
+                int res = line[current]->num + line[next]->num;
+                line[next]->pNode->updateTile(res);
+                line[next]->num = res;
+                line[current]->pNode->updateTile(0);
+                line[current]->num = 0;
+                CCLOG("Moved");
+            }
+            next--;
+        }
+        current--;
     }
 }
 

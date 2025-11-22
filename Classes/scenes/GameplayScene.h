@@ -6,6 +6,8 @@
 #include <tuple>
 #include <map>
 
+class TileWidget;
+
 enum class eDirection : char {
     UNDEFINED = -1,
     UP = 0,
@@ -15,7 +17,7 @@ enum class eDirection : char {
 };
 
 struct TileInfo {
-    cocos2d::Node* pNode{nullptr};
+    TileWidget* pNode{nullptr};
     int num = 0;
 };
 
@@ -34,6 +36,7 @@ protected:
 
     void touchHandler();
     void onMove(eDirection dir);
+    void proceedOnMove(std::vector<TileInfo*> line);
     std::pair<std::pair<int, int>, std::pair<int, int>> getStartRandomPosition() const;
 
 private:

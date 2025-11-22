@@ -6,8 +6,11 @@
 using namespace cocos2d;
 using namespace cocos2d::ui;
 
+namespace {
+    constexpr auto _tileBg = "GUI/cocosstudio/img/tile0.png";
+}
+
 std::unordered_map<int, std::string> TileWidget::imageList = {
-    {0, "GUI/cocosstudio/img/tile0.png"},
     {2, "GUI/cocosstudio/img/tile2.png"},
     {4, "GUI/cocosstudio/img/tile4.png"},
     {8, "GUI/cocosstudio/img/tile8.png"},
@@ -33,26 +36,35 @@ TileWidget * TileWidget::create(int num, const std::string& info) {
 }
 
 void TileWidget::updateTile(int num, const std::string &info) {
-    if (num >= 0 && imageList.count(num) > 0U && ImageView::init()) {
-        loadTexture(imageList[num], TextureResType::LOCAL);
+    if (imageList.count(num) > 0U) {
+        mImg->loadTexture(imageList[num], TextureResType::LOCAL);
+        mText->setTextColor({0,0,0,255});
+    } else {
+        mText->setTextColor({255,255,255,255});
     }
-    if (auto text = dynamic_cast<Text*>(NodeUtils::getNodeByName(this, "text"))) {
-        text->setString(info);
-    }
+    mImg->setVisible(imageList.count(num) > 0U);
+
+    mText->setString(info);
 }
 
 bool TileWidget::initWithNum(int num, const std::string& info) {
-    if (num >= 0 && imageList.count(num) > 0U && ImageView::init()) {
-        loadTexture(imageList[num], TextureResType::LOCAL);
-        if (!info.empty()) {
-            auto text = Text::create();
-            text->setPositionX(15.f);
-            text->setName("text");
-            text->setString(info);
-            addChild(text);
-        }
-        return true;
-    }
-    CCASSERT(false, "Cannot initialize this tile.");
-    return false;
+    if (!ImageView::init())
+        return false;
+    setContentSize(Size{136.f,136.f});
+    loadTexture(_tileBg, TextureResType::LOCAL); // bg
+
+    // load image
+    mImg = ImageView::create();
+    addChild(mImg);
+    mImg->setAnchorPoint({0.5f, 0.5f});
+    mImg->setPosition({136/2, 136/2});
+
+    // load text
+    mText = Text::create();
+    addChild(mText);
+    mText->setPosition({136/2, 136/4});
+
+    updateTile(num, info);
+
+    return true;
 }

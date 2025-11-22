@@ -141,6 +141,8 @@ target_include_directories(${APP_NAME}
         PRIVATE Classes
         PRIVATE ${COCOS2DX_ROOT_PATH}/cocos/audio/include/
 )
+target_compile_features(${APP_NAME} PRIVATE cxx_std_20)
+#target_compile_options(${APP_NAME} PRIVATE -Wall)
 
 # mark app resources
 setup_cocos_app_config(${APP_NAME})
