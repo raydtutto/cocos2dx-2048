@@ -153,39 +153,96 @@ void GameplayScene::onMove(eDirection dir) {
             proceedOnMove(line);
         }
     }
+    else if (dir == eDirection::UP) {
+        for (int x = 0; x < gridSize.first; ++x) {
+            std::vector<TileInfo*> line;
+            line.push_back(&mGrid[x][3]);
+            line.push_back(&mGrid[x][2]);
+            line.push_back(&mGrid[x][1]);
+            line.push_back(&mGrid[x][0]);
+            proceedOnMove(line);
+        }
+    } else if (dir == eDirection::LEFT) {
+        for (int y = 0; y < gridSize.first; ++y) {
+            std::vector<TileInfo*> line;
+            line.push_back(&mGrid[0][y]);
+            line.push_back(&mGrid[1][y]);
+            line.push_back(&mGrid[2][y]);
+            line.push_back(&mGrid[3][y]);
+            proceedOnMove(line);
+        }
+    } else if (dir == eDirection::RIGHT) {
+        for (int y = 0; y < gridSize.first; ++y) {
+            std::vector<TileInfo*> line;
+            line.push_back(&mGrid[3][y]);
+            line.push_back(&mGrid[2][y]);
+            line.push_back(&mGrid[1][y]);
+            line.push_back(&mGrid[0][y]);
+            proceedOnMove(line);
+        }
+    }
+    if (dir != eDirection::UNDEFINED) {
+        auto pos = getRandomPos();
+        if (pos.first >= 0 && pos.second >= 0) {
+            mGrid[pos.first][pos.second].pNode->updateTile(2);
+            mGrid[pos.first][pos.second].num = 2;
+        }
+    }
 }
 
 void GameplayScene::proceedOnMove(std::vector<TileInfo*> line) {
     CCLOG("ProceedOnMove");
-    auto size = static_cast<int>(line.size());
-    int current = size - 1;
-    while (current >= 0) {
-        if (line[current]->num == 0) {
-            current--;
-            continue;
+
+    // Delete "empty" tiles from the line
+    std::vector<TileInfo*> tempLine(line);
+    for (auto it = tempLine.begin(); it != tempLine.end();) {
+        if ((*it)->num == 0) {
+            it = tempLine.erase(it);
+        } else {
+            ++it;
         }
-        int next = current - 1;
-        while (next >= 0) {
-            if (line[current]->num == line[next]->num) {
-                CCLOG("Merge");
-                int res = line[current]->num + line[next]->num;
-                line[next]->pNode->updateTile(res);
-                line[next]->num = res;
-                line[current]->pNode->updateTile(0);
-                line[current]->num = 0;
-            } else if (line[next]->num > 0) {
-                CCLOG("Stop");
-            } else {
-                int res = line[current]->num + line[next]->num;
-                line[next]->pNode->updateTile(res);
-                line[next]->num = res;
-                line[current]->pNode->updateTile(0);
-                line[current]->num = 0;
-                CCLOG("Moved");
+    }
+
+    // Merge identical tiles
+    int tempSize = tempLine.size();
+    if (tempSize > 1) {
+        for (int i = 0; i < tempSize; ++i) {
+            if (i + 1 < tempSize) {
+                if (tempLine[i]->num == tempLine[i + 1]->num) {
+                    int next = tempLine[i]->num + tempLine[i + 1]->num;
+                    tempLine[i]->pNode->updateTile(next);
+                    tempLine[i]->num = next;
+                    tempLine[i + 1]->pNode->updateTile(0);
+                    tempLine[i + 1]->num = 0;
+                    i++;
+                }
             }
-            next--;
         }
-        current--;
+    }
+
+    // Move tiles
+    if (tempSize > 0) {
+        int i = 0;
+        while (i < line.size()) {
+            if (line[i]->num > 0) {
+                i++;
+            } else {
+                int next = i + 1;
+                while (next < line.size()) {
+                    if (line[next]->num == 0) {
+                        next++;
+                    } else {
+                        int nextNum = line[next]->num;
+                        line[i]->pNode->updateTile(nextNum);
+                        line[i]->num = nextNum;
+                        line[next]->pNode->updateTile(0);
+                        line[next]->num = 0;
+                        next = line.size();
+                    }
+                }
+                i++;
+            }
+        }
     }
 }
 
@@ -229,6 +286,7 @@ void GameplayScene::keyReleased(EventKeyboard::KeyCode keyCode, Event*) {
 }
 
 std::pair<std::pair<int, int>, std::pair<int, int>> GameplayScene::getStartRandomPosition() const {
+    // todo rewrite
     std::random_device rd;
     std::uniform_int_distribution<int> dist(0, 3);
 
@@ -244,4 +302,23 @@ std::pair<std::pair<int, int>, std::pair<int, int>> GameplayScene::getStartRando
     result.second.second = dist(rd);
 
     return result;
+}
+
+std::pair<int, int> GameplayScene::getRandomPos() {
+    // Store available places on the grid
+    std::vector<std::pair<int, int>> buffer;
+    for (int x = 0; x < gridSize.first; ++x) {
+        for (int y = 0; y < gridSize.second; ++y) {
+            if (mGrid[x][y].num == 0) {
+                buffer.push_back({x, y});
+            }
+        }
+    }
+    if (buffer.empty())
+        return {-1, -1}; // pair
+
+    // Pick random place from the store
+    std::random_device rd;
+    std::uniform_int_distribution<int> dist(0, buffer.size() - 1);
+    return buffer[dist(rd)];
 }

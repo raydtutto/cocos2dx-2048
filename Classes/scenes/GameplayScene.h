@@ -39,6 +39,8 @@ protected:
     void proceedOnMove(std::vector<TileInfo*> line);
     std::pair<std::pair<int, int>, std::pair<int, int>> getStartRandomPosition() const;
 
+    std::pair<int, int> getRandomPos();
+
 private:
     std::map<int, std::map<int, TileInfo>> mGrid;
     cocos2d::Vec2 mInitTouchPos = cocos2d::Vec2::ZERO;
