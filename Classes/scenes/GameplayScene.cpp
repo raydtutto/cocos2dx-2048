@@ -12,6 +12,7 @@ using namespace cocos2d;
 namespace {
     constexpr auto touchSwipeThreshold = 70.f;
     constexpr std::pair<int, int> gridSize{4, 4};
+    const Color4B bgColor = {40,40,45,255};
 }
 
 GameplayScene* GameplayScene::create() {
@@ -32,6 +33,10 @@ GameplayScene::~GameplayScene() {
 }
 
 bool GameplayScene::initWithCSB(const std::string& path) {
+    // Set background color
+    const auto layerColor = LayerColor::create(bgColor);
+    addChild(layerColor);
+
     auto scene = CSLoader::createNode(path);
     if (scene && SceneBase::init()) {
         CC_SAFE_RELEASE(mRootNode);
@@ -64,7 +69,7 @@ void GameplayScene::fillGrid() {
     auto scale = size.width / boardSize.width;
     gameboard->setScale(scale);
 
-    // Background
+    // Board background
     auto sprite = Sprite::create("GUI/cocosstudio/img/boardBg.png");
     gameboard->addChild(sprite);
     sprite->setAnchorPoint(Vec2::ZERO);
