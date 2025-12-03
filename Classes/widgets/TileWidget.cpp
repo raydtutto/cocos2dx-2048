@@ -1,14 +1,11 @@
 #include "TileWidget.h"
 
 #include "ui/UIText.h"
+#include "ui/UIImageView.h"
 #include "utils/NodeUtils.h"
 
 using namespace cocos2d;
 using namespace cocos2d::ui;
-
-namespace {
-    constexpr auto _tileBg = "GUI/cocosstudio/img/tile0.png";
-}
 
 std::unordered_map<int, std::string> TileWidget::imageList = {
     {2, "GUI/cocosstudio/img/tile2.png"},
@@ -47,17 +44,37 @@ void TileWidget::updateTile(int num, const std::string &info) {
     mText->setString(info);
 }
 
+void TileWidget::moveTile(cocos2d::Vec2 position) {
+    if (!mImg)
+        return;
+
+    auto seq = Sequence::create(
+    MoveTo::create(2, position),
+    CallFunc::create([this]() {
+        if (!mImg)
+            return;
+        mImg->setPosition(mPos);
+    }),
+        nullptr);
+    mImg->runAction(seq);
+}
+
+cocos2d::Vec2 TileWidget::getTilePosition() {
+    return mPos;
+}
+
 bool TileWidget::initWithNum(int num, const std::string& info) {
-    if (!ImageView::init())
+    if (!Widget::init())
         return false;
-    setContentSize(Size{136.f,136.f});
-    loadTexture(_tileBg, TextureResType::LOCAL); // bg
+    setContentSize(Size{144.f,144.f});
+    // loadTexture(_tileBg, TextureResType::LOCAL); // bg
 
     // load image
     mImg = ImageView::create();
     addChild(mImg);
     mImg->setAnchorPoint({0.5f, 0.5f});
     mImg->setPosition({136/2, 136/2});
+    mPos = mImg->getPosition();
 
     // load text
     mText = Text::create();

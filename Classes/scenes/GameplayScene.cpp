@@ -63,6 +63,17 @@ void GameplayScene::fillGrid() {
     auto boardSize = gameboard->getContentSize();
     auto scale = size.width / boardSize.width;
     gameboard->setScale(scale);
+
+    // Background
+    auto sprite = Sprite::create("GUI/cocosstudio/img/boardBg.png");
+    gameboard->addChild(sprite);
+    sprite->setAnchorPoint(Vec2::ZERO);
+    auto spriteSize = sprite->getContentSize();
+    gameboard->setPosition(Vec2(
+    gameboard->getPositionX() + boardSize.width / 2 - spriteSize.width / 2,
+    gameboard->getPositionY() + boardSize.height / 2 - spriteSize.height / 2
+    ));
+
     for (auto& row : mGrid) {
         for (auto& item : row.second) {
             if (item.second.pNode)
@@ -96,7 +107,11 @@ void GameplayScene::fillGrid() {
                 tileInfo.num = nextNum;
                 tileInfo.pNode = tile;
                 tile->setAnchorPoint({0.5f, 0.5f});
-                tile->setPosition(Vec2(static_cast<float>(x) * tileSize.width + tileSize.width / 2, static_cast<float>(y) * tileSize.height + tileSize.height / 2));
+
+                tile->setPosition(Vec2(
+                    static_cast<float>(x) * tileSize.width + tileSize.width / 2,
+                    static_cast<float>(y) * tileSize.height + tileSize.height / 2
+                    ));
 
                 mGrid[x][y] = tileInfo;
                 count++;
@@ -232,6 +247,7 @@ void GameplayScene::proceedOnMove(std::vector<TileInfo*> line) {
                     if (line[next]->num == 0) {
                         next++;
                     } else {
+                        // todo move animation
                         int nextNum = line[next]->num;
                         line[i]->pNode->updateTile(nextNum);
                         line[i]->num = nextNum;
